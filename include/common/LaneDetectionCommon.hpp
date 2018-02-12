@@ -66,6 +66,7 @@ public:
     virtual void releaseModules();
 
     virtual dwStatus runSingleCameraPipeline();
+
     UInt32MultiArray array; //variable where lane's positions are stored
 protected:
     bool initDriveworks();

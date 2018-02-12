@@ -33,7 +33,6 @@
 
 // Sample
 #include <common/LaneDetectionCommon.hpp>
-#include "common/core.h"
 
 //#######################################################################################
 int main(int argc, const char **argv)
