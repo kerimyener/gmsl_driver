@@ -1,6 +1,7 @@
 <launch>
 
 <!-- 
+
      This file launches a node that publishes images from GMSL cameras on a DrivePX2 to rostopics 
      Once running, each camera group has a node running under /camera/<groupidx>.
      For each camera group, the cameras are published under /camera/<groupidx>/<cameraidx> starting
