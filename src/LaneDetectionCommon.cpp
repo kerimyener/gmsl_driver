@@ -29,6 +29,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #include "common/LaneDetectionCommon.hpp"
+#include "common/core.h"
 
 #include <iostream>
 
@@ -417,9 +418,9 @@ void LaneNet::drawLaneDetectionROI(dwRenderBufferHandle_t renderBuffer, dwRender
 //#######################################################################################
 void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth,
                                      dwRenderBufferHandle_t renderBuffer, dwRendererHandle_t renderer)
-{
-    drawLaneDetectionROI(renderBuffer, renderer);
+{   // Create a new LaneNode object.
 
+    drawLaneDetectionROI(renderBuffer, renderer);
     for (uint32_t i = 0; i < lanes.numLaneMarkings; ++i) {
 
         const dwLaneMarking& laneMarking = lanes.laneMarkings[i];
@@ -445,7 +446,7 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
         uint32_t n_verts = 0;
         dwVector2f previousP{};
         bool firstPoint = true;
-
+       
         for (uint32_t j = 0; j < laneMarking.numPoints; ++j) {
 
             dwVector2f center;
@@ -464,7 +465,9 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
 
                 coords[0] = static_cast<float32_t>(previousP.x);
                 coords[1] = static_cast<float32_t>(previousP.y);
-                coords += vertexStride;
+                LaneNet::array.data.push_back(previousP.x);                	
+                
+	  	coords += vertexStride;
 
                 coords[0] = static_cast<float32_t>(center.x);
                 coords[1] = static_cast<float32_t>(center.y);
@@ -478,10 +481,8 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
         dwRenderer_renderBuffer(renderBuffer, renderer);
         //std::cout << "laneMarking.imagePoints["<< i << "].x: " << laneMarking.imagePoints[i].x<< std::endl;
         //std::cout << "laneMarking.imagePoints["<< i << "].y: " << laneMarking.imagePoints[i].y<< std::endl;
-
-
-
     }
+   	
 }
 
 //#######################################################################################

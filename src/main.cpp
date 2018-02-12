@@ -33,11 +33,17 @@
 
 // Sample
 #include <common/LaneDetectionCommon.hpp>
+#include "common/core.h"
 
 //#######################################################################################
 int main(int argc, const char **argv)
-{
-    const ProgramArguments arguments = ProgramArguments({
+{   
+         ros::init(argc,(char**)argv,"mai");
+         ros::NodeHandle n;
+	 ros::Publisher pub = n.advertise<std_msgs::UInt32MultiArray>("array", 100);
+
+
+	 const ProgramArguments arguments = ProgramArguments({
 #ifdef DW_USE_NVMEDIA
             ProgramArguments::Option_t("camera-type", "ar0231-rccb-ssc"),
             ProgramArguments::Option_t("csi-port", "ab"),
@@ -83,7 +89,8 @@ int main(int argc, const char **argv)
     // main loop
     // grun and gWindow defined in SampleFramework.hpp.
     //gRun is Boolean and gWindow is object derived from WindowBase in WindowGLFW
-    while (gRun && !gWindow->shouldClose()) {
+    while (gRun && !gWindow->shouldClose() && ros::ok()) {
+    	pub.publish(laneNet.array);
         std::this_thread::yield();
 
         bool processImage = true;
@@ -102,6 +109,7 @@ int main(int argc, const char **argv)
             laneNet.runSingleCameraPipeline();
 
             gWindow->swapBuffers();
+ 	    ros::spinOnce();
         }
     }
 
