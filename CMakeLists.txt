@@ -74,7 +74,6 @@ add_executable(${NODE_NAME} src/main.cpp
   src/Grid.cpp
   src/MathUtils.cpp
   src/GPUProgram.cpp
-  src/core.cc
 )
 
 target_link_libraries(${NODE_NAME}
