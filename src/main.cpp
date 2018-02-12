@@ -41,7 +41,7 @@ int main(int argc, const char **argv)
 //################################ROS INITIALIZE########################################
          ros::init(argc,(char**)argv,"mai");
          ros::NodeHandle n;
-	 ros::Publisher pub = n.advertise<std_msgs::UInt32MultiArray>("array", 100);
+         ros::Publisher pub = n.advertise<std_msgs::UInt32MultiArray>("array", 100);
 //######################################################################################
 	 const ProgramArguments arguments = ProgramArguments({
 #ifdef DW_USE_NVMEDIA
@@ -88,7 +88,7 @@ int main(int argc, const char **argv)
 
     // main loop
     // grun and gWindow defined in SampleFramework.hpp.
-    //gRun is Boolean and gWindow is object derived from WindowBase in WindowGLFW
+    // gRun is Boolean and gWindow is object derived from WindowBase in WindowGLFW
     while (gRun && !gWindow->shouldClose() && ros::ok()) {
         pub.publish(laneNet.array);//publish the array
         std::this_thread::yield();
@@ -109,7 +109,7 @@ int main(int argc, const char **argv)
             laneNet.runSingleCameraPipeline();
 
             gWindow->swapBuffers();
- 	    ros::spinOnce();
+        ros::spinOnce();
         }
     }
 
