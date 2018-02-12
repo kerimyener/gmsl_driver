@@ -5,8 +5,6 @@ set (CMAKE_CXX_STANDARD 11)
 
 # FindDriveworks.cmake, ArchConfiguration.cmake, and LibFindMacros.cmake were needed for my setup they are taken from driveworks/samples/cmake/
 # ArchConfiguration.cmake was the only file that needed small changes, remove the fatal error on line 17 and add the following lines in its place
-         set(VIBRANTE TRUE)
-         add_definitions(-DVIBRANTE)
 # this is the path I placed the driveworks cmake files in
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -77,7 +75,7 @@ add_executable(${NODE_NAME} src/main.cpp
 
 target_link_libraries(${NODE_NAME}
   ${catkin_LIBRARIES}
-  nvmedia  
+  #nvmedia  
   ${GLEW_LIBRARY}
   driveworks
   GLESv2
