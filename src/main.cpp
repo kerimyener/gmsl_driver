@@ -37,11 +37,12 @@
 //#######################################################################################
 int main(int argc, const char **argv)
 {   
+
+//################################ROS INITIALIZE########################################
          ros::init(argc,(char**)argv,"mai");
          ros::NodeHandle n;
 	 ros::Publisher pub = n.advertise<std_msgs::UInt32MultiArray>("array", 100);
-
-
+//######################################################################################
 	 const ProgramArguments arguments = ProgramArguments({
 #ifdef DW_USE_NVMEDIA
             ProgramArguments::Option_t("camera-type", "ar0231-rccb-ssc"),
@@ -89,7 +90,7 @@ int main(int argc, const char **argv)
     // grun and gWindow defined in SampleFramework.hpp.
     //gRun is Boolean and gWindow is object derived from WindowBase in WindowGLFW
     while (gRun && !gWindow->shouldClose() && ros::ok()) {
-    	pub.publish(laneNet.array);
+        pub.publish(laneNet.array);//publish the array
         std::this_thread::yield();
 
         bool processImage = true;

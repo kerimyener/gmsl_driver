@@ -463,10 +463,10 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
                     break;
 
                 coords[0] = static_cast<float32_t>(previousP.x);
-                coords[1] = static_cast<float32_t>(previousP.y);
-                LaneNet::array.data.push_back(previousP.x);                	
-                
+                coords[1] = static_cast<float32_t>(previousP.y);                
 	  	coords += vertexStride;
+
+                LaneNet::array.data.push_back(previousP.x);// store points of lane in array
 
                 coords[0] = static_cast<float32_t>(center.x);
                 coords[1] = static_cast<float32_t>(center.y);
