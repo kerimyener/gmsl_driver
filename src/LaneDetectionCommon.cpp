@@ -466,6 +466,7 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
             center.y = laneMarking.imagePoints[j].y;
             data.array.data.push_back(center.x) ;
             data.array.data.push_back(center.y) ;
+            data.header.stamp = ros::Time::now();
 
             if (firstPoint) { // Special case for the first point
                 previousP = center;
