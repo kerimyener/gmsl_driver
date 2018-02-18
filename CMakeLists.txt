@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(gmsl_n_cameras)
+project(lane_detection)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -21,13 +21,20 @@ set(Driveworks_LIBRARY /usr/local/driveworks/lib/)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  geometry_msgs
-  cv_bridge 
-  image_transport
+  std_msgs
+  message_generation
 )
+
+add_message_files(
+   FILES
+   dwlane.msg
+)
+
+generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS message_runtime
 )
 link_directories(
   ${Driveworks_LIBRARY}

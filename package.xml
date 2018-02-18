@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>gmsl_n_cameras</name>
+  <name>lane_detection</name>
   <version>1.0.0</version>
   <description>
     Wrapper for Nvidia Driveworks
@@ -9,6 +9,10 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
   <depend>libglew-dev</depend><!--TODO: Figure out what actually needs this library-->
+  <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <build_depend>lane_detection_msg</build_depend>
   <maintainer email="NA@gmail.com">wei</maintainer>
   <license>BSD</license>
 

@@ -420,22 +420,35 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
 {
     drawLaneDetectionROI(renderBuffer, renderer);
 
+    /*data.array.layout.dim.push_back(std_msgs::MultiArrayDimension());
+    data.array.layout.dim.push_back(std_msgs::MultiArrayDimension());
+    data.array.layout.dim[0].label = "x";
+    data.array.layout.dim[0].label = "y";*/
+
     for (uint32_t i = 0; i < lanes.numLaneMarkings; ++i) {
 
         const dwLaneMarking& laneMarking = lanes.laneMarkings[i];
 
         dwLanePositionType category = laneMarking.positionType;
 
-        if(category==DW_LANEMARK_POSITION_ADJACENT_LEFT)
+        if(category==DW_LANEMARK_POSITION_ADJACENT_LEFT){
             dwRenderer_setColor(DW_RENDERER_COLOR_YELLOW, renderer);
-        else if(category==DW_LANEMARK_POSITION_EGO_LEFT)
+            data.header.frame_id="yellow";}
+        else if(category==DW_LANEMARK_POSITION_EGO_LEFT){
             dwRenderer_setColor(DW_RENDERER_COLOR_RED, renderer);
-        else if(category==DW_LANEMARK_POSITION_EGO_RIGHT)
+            data.header.frame_id="red";}
+        else if(category==DW_LANEMARK_POSITION_EGO_RIGHT){
             dwRenderer_setColor(DW_RENDERER_COLOR_GREEN, renderer);
-        else if(category==DW_LANEMARK_POSITION_ADJACENT_RIGHT)
+            data.header.frame_id="green";}
+        else if(category==DW_LANEMARK_POSITION_ADJACENT_RIGHT){
             dwRenderer_setColor(DW_RENDERER_COLOR_BLUE, renderer);
-
+            data.header.frame_id="blue";}
         dwRenderer_setLineWidth(laneWidth, renderer);
+
+        /*data.array.layout.dim[0].size = laneMarking.numPoints;
+        data.array.layout.dim[1].size = laneMarking.numPoints;
+        data.array.layout.dim[0].stride = 2*laneMarking.numPoints;
+        data.array.layout.dim[1].stride = laneMarking.numPoints;*/
 
         float32_t* coords = nullptr;
         uint32_t maxVertices = 0;
@@ -451,7 +464,8 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
             dwVector2f center;
             center.x = laneMarking.imagePoints[j].x;
             center.y = laneMarking.imagePoints[j].y;
-
+            data.array.data.push_back(center.x) ;
+            data.array.data.push_back(center.y) ;
 
             if (firstPoint) { // Special case for the first point
                 previousP = center;
@@ -904,4 +918,9 @@ void LaneNet::releaseModules()
     dwLaneDetector_release(&m_laneDetector);
     dwRelease(&m_sdk);
     dwLogger_release();
+}
+
+void LaneNet::lanePub (ros::Publisher *publisher){
+
+  publisher->publish(data);
 }

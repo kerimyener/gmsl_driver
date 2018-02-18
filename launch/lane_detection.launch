@@ -8,8 +8,8 @@
      number even if not all four cameras are attached to a group. Likewise, if a camera group is skipped
      that camera's group number will be used for the next topic
 -->
-
-	<node name="gmsl_n_cameras" pkg="gmsl_n_cameras" type="gmsl_n_cameras_node" args="--input-type=camera --camera-type=ar0231-rccb" /> 
+<!--args="input-type=camera camera-type=ar0231-rccb"-->
+	<node name="lane_detection" pkg="lane_detection" type="lane_detection_node"  /> 
 
 
 </launch>

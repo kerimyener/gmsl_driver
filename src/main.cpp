@@ -36,7 +36,11 @@
 
 //#######################################################################################
 int main(int argc, const char **argv)
-{
+{  
+    ros::init(argc, (char **)argv, "laneDetection");
+    ros::NodeHandle n;
+    ros::Publisher pub = n.advertise<lane_detection::dwlane>("lane", 1);
+    
     const ProgramArguments arguments = ProgramArguments({
 #ifdef DW_USE_NVMEDIA
             ProgramArguments::Option_t("camera-type", "ar0231-rccb-ssc"),
@@ -83,7 +87,8 @@ int main(int argc, const char **argv)
     // main loop
     // grun and gWindow defined in SampleFramework.hpp.
     //gRun is Boolean and gWindow is object derived from WindowBase in WindowGLFW
-    while (gRun && !gWindow->shouldClose()) {
+    while (gRun && !gWindow->shouldClose() && ros::ok()) {
+        laneNet.lanePub(&pub);
         std::this_thread::yield();
 
         bool processImage = true;
