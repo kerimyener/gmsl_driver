@@ -54,9 +54,12 @@
 #include <dw/image/ImageStreamer.h>
 
 #include <string>
+//##########################################
 #include <ros/ros.h>
-#include "std_msgs/UInt32MultiArray.h"
-using namespace std_msgs;
+#include "lane_detection/dwlane.h"
+//##########################################
+
+
 class LaneNet
 {
 public:
@@ -67,7 +70,8 @@ public:
 
     virtual dwStatus runSingleCameraPipeline();
 
-    UInt32MultiArray array; //variable where lane's positions are stored
+    void lanePub (ros::Publisher *publisher); //variable where lane's positions are stored
+    
 protected:
     bool initDriveworks();
     bool initCameras();
@@ -124,6 +128,7 @@ protected:
     uint32_t m_cameraHeight;
 
     float32_t m_threshold;
+    lane_detection::dwlane data;
     
     //dwRect m_roi; //default full frame, customize with x,y,width,height in video resolution
     //float32_t m_temporalSmoothFactor; //smoothed point = factor*previous + (1.0-factor)*current

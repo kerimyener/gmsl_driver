@@ -32,6 +32,9 @@
 
 #include <iostream>
 
+
+
+
 //#######################################################################################
 LaneNet::LaneNet(uint32_t windowWidth, uint32_t windowHeight, const std::string &inputType)
     : m_sdk(DW_NULL_HANDLE)
@@ -418,23 +421,17 @@ void LaneNet::drawLaneDetectionROI(dwRenderBufferHandle_t renderBuffer, dwRender
 void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth,
                                      dwRenderBufferHandle_t renderBuffer, dwRendererHandle_t renderer)
 {   // Create a new LaneNode object.
-
+    
     drawLaneDetectionROI(renderBuffer, renderer);
     for (uint32_t i = 0; i < lanes.numLaneMarkings; ++i) {
 
         const dwLaneMarking& laneMarking = lanes.laneMarkings[i];
-
+        
         dwLanePositionType category = laneMarking.positionType;
-
-        if(category==DW_LANEMARK_POSITION_ADJACENT_LEFT)
+	
+        if(category==DW_LANEMARK_POSITION_ADJACENT_LEFT){
             dwRenderer_setColor(DW_RENDERER_COLOR_YELLOW, renderer);
-        else if(category==DW_LANEMARK_POSITION_EGO_LEFT)
-            dwRenderer_setColor(DW_RENDERER_COLOR_RED, renderer);
-        else if(category==DW_LANEMARK_POSITION_EGO_RIGHT)
-            dwRenderer_setColor(DW_RENDERER_COLOR_GREEN, renderer);
-        else if(category==DW_LANEMARK_POSITION_ADJACENT_RIGHT)
-            dwRenderer_setColor(DW_RENDERER_COLOR_BLUE, renderer);
-
+            //data.header.frame_id="yellow";
         dwRenderer_setLineWidth(laneWidth, renderer);
 
         float32_t* coords = nullptr;
@@ -451,7 +448,10 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
             dwVector2f center;
             center.x = laneMarking.imagePoints[j].x;
             center.y = laneMarking.imagePoints[j].y;
-
+  	    data.yellow.data.push_back(center.x) ;
+            data.yellow.data.push_back(center.y) ;
+            data.header.stamp = ros::Time::now();
+            
 
             if (firstPoint) { // Special case for the first point
                 previousP = center;
@@ -464,10 +464,8 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
 
                 coords[0] = static_cast<float32_t>(previousP.x);
                 coords[1] = static_cast<float32_t>(previousP.y);
-                LaneNet::array.data.push_back(previousP.x);                	
-                
 	  	coords += vertexStride;
-
+                
                 coords[0] = static_cast<float32_t>(center.x);
                 coords[1] = static_cast<float32_t>(center.y);
                 coords += vertexStride;
@@ -475,13 +473,159 @@ void LaneNet::drawLaneMarkings(const dwLaneDetection &lanes, float32_t laneWidth
                 previousP = center;
             }
         }
-
         dwRenderBuffer_unmap(n_verts, renderBuffer);
         dwRenderer_renderBuffer(renderBuffer, renderer);
-        //std::cout << "laneMarking.imagePoints["<< i << "].x: " << laneMarking.imagePoints[i].x<< std::endl;
-        //std::cout << "laneMarking.imagePoints["<< i << "].y: " << laneMarking.imagePoints[i].y<< std::endl;
+}
+
+        else if(category==DW_LANEMARK_POSITION_EGO_LEFT){
+            dwRenderer_setColor(DW_RENDERER_COLOR_RED, renderer);
+            //data.header.frame_id="red";
+        dwRenderer_setLineWidth(laneWidth, renderer);
+
+        float32_t* coords = nullptr;
+        uint32_t maxVertices = 0;
+        uint32_t vertexStride = 0;
+        dwRenderBuffer_map(&coords, &maxVertices, &vertexStride, renderBuffer);
+
+        uint32_t n_verts = 0;
+        dwVector2f previousP{};
+        bool firstPoint = true;
+       
+        for (uint32_t j = 0; j < laneMarking.numPoints; ++j) {
+
+            dwVector2f center;
+            center.x = laneMarking.imagePoints[j].x;
+            center.y = laneMarking.imagePoints[j].y;
+  	    data.red.data.push_back(center.x) ;
+            data.red.data.push_back(center.y) ;
+            data.header.stamp = ros::Time::now();
+            
+
+            if (firstPoint) { // Special case for the first point
+                previousP = center;
+                firstPoint = false;
+            }
+            else {
+                n_verts += 2;
+                if(n_verts > maxVertices)
+                    break;
+
+                coords[0] = static_cast<float32_t>(previousP.x);
+                coords[1] = static_cast<float32_t>(previousP.y);
+	  	coords += vertexStride;
+                
+                coords[0] = static_cast<float32_t>(center.x);
+                coords[1] = static_cast<float32_t>(center.y);
+                coords += vertexStride;
+
+                previousP = center;
+            }
+        }
+        dwRenderBuffer_unmap(n_verts, renderBuffer);
+        dwRenderer_renderBuffer(renderBuffer, renderer);
+}
+
+        else if(category==DW_LANEMARK_POSITION_EGO_RIGHT){
+            dwRenderer_setColor(DW_RENDERER_COLOR_GREEN, renderer);
+            //data.header.frame_id="green";
+        dwRenderer_setLineWidth(laneWidth, renderer);
+
+        float32_t* coords = nullptr;
+        uint32_t maxVertices = 0;
+        uint32_t vertexStride = 0;
+        dwRenderBuffer_map(&coords, &maxVertices, &vertexStride, renderBuffer);
+
+        uint32_t n_verts = 0;
+        dwVector2f previousP{};
+        bool firstPoint = true;
+       
+        for (uint32_t j = 0; j < laneMarking.numPoints; ++j) {
+
+            dwVector2f center;
+            center.x = laneMarking.imagePoints[j].x;
+            center.y = laneMarking.imagePoints[j].y;
+  	    data.green.data.push_back(center.x) ;
+            data.green.data.push_back(center.y) ;
+            data.header.stamp = ros::Time::now();
+            
+
+            if (firstPoint) { // Special case for the first point
+                previousP = center;
+                firstPoint = false;
+            }
+            else {
+                n_verts += 2;
+                if(n_verts > maxVertices)
+                    break;
+
+                coords[0] = static_cast<float32_t>(previousP.x);
+                coords[1] = static_cast<float32_t>(previousP.y);
+	  	coords += vertexStride;
+                
+                coords[0] = static_cast<float32_t>(center.x);
+                coords[1] = static_cast<float32_t>(center.y);
+                coords += vertexStride;
+
+                previousP = center;
+            }
+        }
+        dwRenderBuffer_unmap(n_verts, renderBuffer);
+        dwRenderer_renderBuffer(renderBuffer, renderer);
+}
+
+        else if(category==DW_LANEMARK_POSITION_ADJACENT_RIGHT){
+            dwRenderer_setColor(DW_RENDERER_COLOR_BLUE, renderer);
+            //data.header.frame_id="blue";
+        dwRenderer_setLineWidth(laneWidth, renderer);
+
+        float32_t* coords = nullptr;
+        uint32_t maxVertices = 0;
+        uint32_t vertexStride = 0;
+        dwRenderBuffer_map(&coords, &maxVertices, &vertexStride, renderBuffer);
+
+        uint32_t n_verts = 0;
+        dwVector2f previousP{};
+        bool firstPoint = true;
+       
+        for (uint32_t j = 0; j < laneMarking.numPoints; ++j) {
+
+            dwVector2f center;
+            center.x = laneMarking.imagePoints[j].x;
+            center.y = laneMarking.imagePoints[j].y;
+  	    data.blue.data.push_back(center.x) ;
+            data.blue.data.push_back(center.y) ;
+            data.header.stamp = ros::Time::now();
+            
+
+            if (firstPoint) { // Special case for the first point
+                previousP = center;
+                firstPoint = false;
+            }
+            else {
+                n_verts += 2;
+                if(n_verts > maxVertices)
+                    break;
+
+                coords[0] = static_cast<float32_t>(previousP.x);
+                coords[1] = static_cast<float32_t>(previousP.y);
+	  	coords += vertexStride;
+                
+                coords[0] = static_cast<float32_t>(center.x);
+                coords[1] = static_cast<float32_t>(center.y);
+                coords += vertexStride;
+
+                previousP = center;
+            }
+        }
+        dwRenderBuffer_unmap(n_verts, renderBuffer);
+        dwRenderer_renderBuffer(renderBuffer, renderer);
+}
+        //dwRenderBuffer_unmap(n_verts, renderBuffer);
+        //dwRenderer_renderBuffer(renderBuffer, renderer);
+        std::cout << "laneMarking.imagePoints["<< i << "].x: " << laneMarking.imagePoints[i].x<< std::endl;
+        std::cout << "laneMarking.imagePoints["<< i << "].y: " << laneMarking.imagePoints[i].y<< std::endl;
     }
-   	
+
 }
 
 //#######################################################################################
@@ -904,4 +1048,10 @@ void LaneNet::releaseModules()
     dwLaneDetector_release(&m_laneDetector);
     dwRelease(&m_sdk);
     dwLogger_release();
+}
+
+
+void LaneNet::lanePub (ros::Publisher *publisher){
+
+  publisher->publish(data);
 }

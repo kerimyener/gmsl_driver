@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(gmsl_n_cameras)
+project(lane_detection)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -16,6 +16,9 @@ find_package(GLEW REQUIRED)
 find_package(Driveworks REQUIRED)
 find_package(OpenCV REQUIRED )
 
+
+
+
 # SET THESE VARIABLES TO YOUR DRIVEWORKS LOCATIONS
 set(Driveworks_INCLUDE_DIR /usr/local/driveworks/include/)
 set(Driveworks_LIBRARY /usr/local/driveworks/lib/)
@@ -26,15 +29,22 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge 
   image_transport
   std_msgs
+  message_generation
 )
+
+add_message_files(FILES dwlane.msg)
+generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS message_runtime
 )
+ 
 link_directories(
   ${Driveworks_LIBRARY}
   ${CUDA_LIBRARIES}
 )
+
 
 
 MESSAGE("Driveworks include directory ${Driveworks_INCLUDE_DIR}")
